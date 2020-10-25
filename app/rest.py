@@ -29,14 +29,15 @@ def checksignin():
     cursor.execute("select admin_id from travel_agency where agency_id = " + agency_id)
     
     admin_rec = cursor.fetchone()
-    admin_id = admin_rec[0]
+    admin_id = str(admin_rec[0])
     cursor.execute("select user_id, passcode from administration where admin_id = " + admin_id)
     user_det_rec = cursor.fetchone()
-    user_id = user_det_rec[0] # value of the 1st column in the select statement
+    user_id = str(user_det_rec[0]) # value of the 1st column in the select statement
     passcode = user_det_rec[1] # value of 2nd column in select statement
 
     cursor.close()
     connection.close()
+    
     if username == user_id and password == passcode: 
         session["agency_id"] = agency_id 
         return jsonify({'success':True})
@@ -79,6 +80,7 @@ def getbuses():
     cursor.close()
     connection.close()
     
+    print(bus_list_dict)
     return jsonify(bus_list_dict)
 
 @app.route('/gettrains', methods=["GET"])
@@ -95,7 +97,9 @@ def gettrains():
     connection = get_connection()
     cursor = connection.cursor()
 
+    print("select train_no, train_name, start_station, depart_time, seats_left, destination, agency_id, depart_date from train_info where start_station = '" + start_station + "' and destination = '" + dest + "' and depart_date = '" + date_of_tr + "'")
     cursor.execute("select train_no, train_name, start_station, depart_time, seats_left, destination, agency_id, depart_date from train_info where start_station = '" + start_station + "' and destination = '" + dest + "' and depart_date = '" + date_of_tr + "'")
+    print("select train_no, train_name, start_station, depart_time, seats_left, destination, agency_id, depart_date from train_info where start_station = '" + start_station + "' and destination = '" + dest + "' and depart_date = '" + date_of_tr + "'")
     results = cursor.fetchall()
 
     train_list = []
@@ -118,7 +122,7 @@ def gettrains():
 
     cursor.close()
     connection.close()
-
+    print(train_list_dict)
     return jsonify(train_list_dict)
 
 @app.route('/pass_det', methods=["POST"])
