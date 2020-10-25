@@ -162,7 +162,7 @@ def reserconf():
         else:
             cursor.execute("insert into reservation(start_date, travel_mode, vehicle_no, adhaar_no, destination, agency_id, seat_no) values ('" + session["date_of_tr"] + "', '" + travel_mode + "', '" + vehicle_no + "', '" + session["adhaar_no" + str(i)] + "', '" + session["dest"] + "', " + session["agency_id"] + ", " + seat_no + ") returning res_id")
             new_id = cursor.fetchone()[0]
-            session["res_id" + str(i)] = new_id
+            session["res_id" + str(i)] = str(new_id)
 
     cursor.close()
     connection.close()
