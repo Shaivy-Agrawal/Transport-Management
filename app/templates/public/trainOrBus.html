@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/static/public/build/tailwind.css">
+    <script>
+      function getBus(){
+        var sstaion = document.getElementById("Starting_station").value;
+        var dest = document.getElementById("Destination").value;
+        var dot = document.getElementById("DoT").value;
+
+        window.localStorage.setItem("starting_station", sstaion);
+        window.localStorage.setItem("destination", dest);
+        window.localStorage.setItem("dateoftravel", dot);
+
+        location.assign("/get_buses");
+
+      }
+      function getTrain(){
+        var sstaion = document.getElementById("Starting_station").value;
+        var dest = document.getElementById("Destination").value;
+        var dot = document.getElementById("DoT").value;
+
+        window.localStorage.setItem("starting_station", sstaion);
+        window.localStorage.setItem("destination", dest);
+        window.localStorage.setItem("dateoftravel", dot);
+
+        location.assign("/get_trains");
+        
+      }
+    </script>
 </head>
 <body class="bg-white-500">
    <!--header -->
@@ -14,7 +40,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
         </svg>
-        <span class="ml-3 text-xl"></span>
+        <span class="ml-3 text-xl">GUMNAAM</span>
       </a>
         <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
         <a class="mr-5 hover:text-gray-900"></a>
@@ -37,13 +63,13 @@
      <div class="flex mb-4">
         <div class="w-1/3 bg-white-400 h-12">
             <label for="fname" >Enter Starting station</label>
-            <input type="text" id="Starting_station" name="fname"></div>
+            <input type="text" id="Starting_station" name="start_station"></div>
         <div class="w-1/3 bg-white-500 h-12">
             <label for="fname" >Enter Destination </label>
-            <input type="text" id="Destination" name="fname"></div>
+            <input type="text" id="Destination" name="destination"></div>
         <div class="w-1/3 bg-white-400 h-12">
             <label for="fname" >Enter Date of travel </label>
-            <input type="text" id="DoT" name="fname"></div>
+            <input type="text" id="DoT" name="date_of_travel"></div>
       </div>
       <br>
       <div class="flex mb-4">
@@ -57,11 +83,12 @@
         <div class="w-1/5 bg-white-400 h-12">
             
         </div>
-        <div class="w-1/5 bg-white-500 h-12"><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ">
+        <div class="w-1/5 bg-white-500 h-12">
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 " onclick="getBus()">
             BUS
           </button></div>
         <div class="w-1/5 bg-white-400 h-12">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 ">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-5 " onclick="getTrain()">
                 TRAIN
               </button>
         </div>

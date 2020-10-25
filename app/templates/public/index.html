@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/static/public/build/tailwind.css">
+    <script>
+      function formValidate() {
+        var usern = document.getElementById("username").value;
+        var passwd = document.getElementById("password").value;
+        var ag_id = document.getElementById("agency_id").value;
+        
+        fetch("/checksignin", {
+          method: 'POST',
+          headers: {'Content-Type': "application/x-www-form-urlencoded"},
+          body: "username=" + usern + "&password=" + passwd + "&agency_id=" + ag_id
+        }).then((response) => response.json())
+        .then((data) => {
+          if (data.success == true) {
+            window.location.assign('/trains_buses')
+          }
+          else {
+            alert('Could not log in!');
+          }
+        })
+      }
+    </script>
 </head>
 <body class="bg-white-500">
     <!--header -->
@@ -14,7 +35,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
-          <span class="ml-3 text-xl"></span>
+          <span class="ml-3 text-xl">GUMNAAM</span>
         </a>
           <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
           <a class="mr-5 hover:text-gray-900"></a>
@@ -39,10 +60,10 @@
           </div>
           <div class="lg:w-2/6 md:w-1/2 bg-gray-200 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
             <h2 class="text-gray-900 text-lg font-medium title-font mb-5">Log in</h2>
-            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Admin ID" type="text">
-            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Travel Agency ID" type="email">
-            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Password" type="email">
-            <button class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Log in</button>
+            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Username" type="text" name="username" id="username"> 
+            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Travel Agency ID" type="text" name="agency_id" id="agency_id">
+            <input class="bg-white rounded border border-gray-400 focus:outline-none focus:border-indigo-500 text-base px-4 py-2 mb-4" placeholder="Password" type="password" name="password" id="password">
+            <button class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg" onclick="formValidate()">Log in</button>
             <p class="text-xs text-gray-500 mt-3"></p>
           </div>
         </div>
