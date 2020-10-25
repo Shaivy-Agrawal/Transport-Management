@@ -23,7 +23,7 @@ def passenger_details():
 
 @app.route('/booking_confirmation')
 def booking_confirmation():
-    return render_template('public/bookingConf.html', adhaar_no1 = '123456789134')
+    return render_template('public/bookingConf.html', **session)
 
 @app.route('/payment_confirmation')
 def payment_confirmation():
