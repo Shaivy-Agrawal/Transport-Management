@@ -1,7 +1,7 @@
 from flask import render_template
 from app import app
 import psycopg2
-from flask import jsonify, request
+from flask import jsonify, request, session
 from datetime import date
 
 def get_connection():
@@ -136,7 +136,7 @@ def pass_det():
         connection = get_connection()
         cursor = connection.cursor()
 
-        if p_name == "" and adhaar_no = "" and dob == "" and house_no == "" and locality == "" and city == "" and state == "" and pincode == "" and contact == "":
+        if p_name == "" and adhaar_no == "" and dob == "" and house_no == "" and locality == "" and city == "" and state == "" and pincode == "" and contact == "":
             continue
         else:
             cursor.execute("insert into customer values ('" + adhaar_no + "', '" + p_name + "', '" + dob + "')")
@@ -160,7 +160,7 @@ def reserconf():
             session["res_id" + str(i)] = ""
             continue
         else:
-            cursor.execute("insert into reservation(start_date, travel_mode, vehicle_no, adhaar_no, destination, agency_id, seat_no) values ('" session["date_of_tr"] + "', '" + travel_mode + "', '" + vehicle_no + "', '" + session["adhaar_no" + str(i)] + "', '" + session["dest"] + "', " + session["agency_id"] + ", " + seat_no + ") returning res_id")
+            cursor.execute("insert into reservation(start_date, travel_mode, vehicle_no, adhaar_no, destination, agency_id, seat_no) values ('" + session["date_of_tr"] + "', '" + travel_mode + "', '" + vehicle_no + "', '" + session["adhaar_no" + str(i)] + "', '" + session["dest"] + "', " + session["agency_id"] + ", " + seat_no + ") returning res_id")
             new_id = cursor.fetchone()[0]
             session["res_id" + str(i)] = new_id
 

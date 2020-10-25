@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, session
 from app import app
 
 @app.route('/')
@@ -23,12 +23,12 @@ def passenger_details():
 
 @app.route('/booking_confirmation')
 def booking_confirmation():
-    return render_template('public/bookingConf.html')
+    return render_template('public/bookingConf.html', adhaar_no1 = '123456789134')
 
 @app.route('/payment_confirmation')
 def payment_confirmation():
-    return render_template('public/paymentConf.html')
+    return render_template('public/paymentConf.html', **session)
 
 @app.route('/view_booking')
 def view_booking():
-    return render_template('public/viewBooking.html')
+    return render_template('public/viewBooking.html', **session)
