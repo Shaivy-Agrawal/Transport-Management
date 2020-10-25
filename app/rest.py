@@ -186,7 +186,7 @@ def payconf():
             continue
         else:
             p_date = date.today().strftime("%Y-%m-%d")
-            cursor.execute("insert into payment values (" + session["payment_id" + str(i)] + ", " + amount + ", '" + p_date + "', '" + adhaar_no + "', " + session["res_id" + str(i)] +")")
+            cursor.execute("insert into payment values (" + session["payment_id" + str(i)] + ", " + str(amount) + ", '" + p_date + "', '" + session["adhaar_no" + str(i)] + "', " + session["res_id" + str(i)] +")")
 
     cursor.close()
     connection.close()
