@@ -19,7 +19,7 @@ def get_connection():
 
 @app.route('/checksignin', methods=["POST"])
 def checksignin():  
-    agency_id = request.form['agency_id']
+    agency_id = str(request.form['agency_id'])
     username = request.form['username']  
     password = request.form['password']  
 
@@ -125,7 +125,7 @@ def pass_det():
         adhaar_no = request.form['adhaar_no' + str(i)]
         dob = request.form['dob' + str(i)]
         contact = request.form['contact' + str(i)]
-        house_no = request.form['house_no' + str(i)]
+        house_no = str(request.form['house_no' + str(i)])
         locality = request.form['locality' + str(i)]
         city = request.form['city' + str(i)]
         state = request.form['state' + str(i)]
@@ -151,7 +151,7 @@ def reserconf():
     for i in range(1, 7):
         travel_mode = request.form["travel_mode" + str(i)]
         vehicle_no = request.form["vehicle_no" + str(i)]
-        seat_no = request.form["seat_no" + str(i)]
+        seat_no = str(request.form["seat_no" + str(i)])
 
         connection = get_connection()
         cursor = connection.cursor()
@@ -174,8 +174,8 @@ def reserconf():
 @app.route('/payconf', methods=["POST"])
 def payconf():
     for i in range(1, 7):
-        payment_id = request.form["payment_id" + str(i)]
-        amount = request.form["amount" + str(i)]
+        payment_id = str(request.form["payment_id" + str(i)])
+        amount = str(request.form["amount" + str(i)])
 
         session["payment_id" + str(i)] = payment_id
 
@@ -186,7 +186,7 @@ def payconf():
             continue
         else:
             p_date = date.today().strftime("%Y-%m-%d")
-            cursor.execute("insert into payment values (" + session["payment_id" + str(i)] + ", " + amount + ", '" + p_date + "', '" + adhaar_no + "', " + session["res_id" + str(i)] +")")
+            cursor.execute("insert into payment values (" + session["payment_id" + str(i)] + ", " + str(amount) + ", '" + p_date + "', '" + session["adhaar_no" + str(i)] + "', " + session["res_id" + str(i)] +")")
 
     cursor.close()
     connection.close()
