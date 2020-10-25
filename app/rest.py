@@ -51,6 +51,7 @@ def getbuses():
 
     session["date_of_tr"] = date_of_tr
     session["dest"] = dest
+    session["travel_mode"] = "bus"
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -88,6 +89,8 @@ def gettrains():
 
     session["date_of_tr"] = date_of_tr
     session["dest"] = dest
+
+    session["travel_mode"] = "train"
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -149,7 +152,7 @@ def pass_det():
 @app.route('/reserconf', methods=["POST"])
 def reserconf():
     for i in range(1, 7):
-        travel_mode = request.form["travel_mode" + str(i)]
+        traevl_mode = session["travel_mode"]
         vehicle_no = request.form["vehicle_no" + str(i)]
         seat_no = str(request.form["seat_no" + str(i)])
 
@@ -197,10 +200,12 @@ def payconf():
 
 @app.route('/confdisplay', methods=["GET"])
 def confdisplay():
-    for i in range(1, 7):
-        connection = get_connection()
-        cursor = connection.cursor()
+    connection = get_connection()
+    cursor = connection.cursor()
 
+    det_list = []
+
+    for i in range(1, 7):
         cursor.execute("select vehicle_no, seat_no, travel_mode from reservation where res_id = " + session["res_id" + str(i)] + " and start_date = '" + session["date_of_tr"] + "' and adhaar_no = '" + session["adhaar_no" + str(i)] + "' and destination = '" + session["dest"] + "' and agency_id = " + session["agency_id"])
         results = cursor.fetchone()
 
@@ -209,11 +214,13 @@ def confdisplay():
         temp_dict["vehicle_no"] = results[0]
         temp_dict["seat_no"] = results[1]
         temp_dict["travel_mode"] = results[2]
-        temp_dict["res_id"] = results[3]
-        temp_dict["payment_id"] = results[4]
-        temp_dict["start_date"] = results[5]
-        temp_dict["adhaar_no"] = results[6]
-        temp_dict["destination"] = results[7]
-        temp_dict["agency_id"] = results[8]
+        temp_dict["res_id"] = session["res_id" + str(i)]
+        temp_dict["payment_id"] = session["payment_id" + str(i)]
+        temp_dict["start_date"] = session["date_of_tr"]
+        temp_dict["adhaar_no"] = session["adhaar_no" + str(i)]
+        temp_dict["destination"] = session["dest"]
+        temp_dict["agency_id"] = session["agency_id"]
 
-        return jsonify(temp_dict)
+        det_list.append(det_list)
+
+    return jsonify({'Details': det_list})
