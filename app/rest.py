@@ -20,7 +20,7 @@ def get_connection():
 @app.route('/checksignin', methods=["POST"])
 def checksignin():  
     agency_id = str(request.form['agency_id'])
-    username = request.form['username']  
+    username = str(request.form['username'])  
     password = request.form['password']  
 
     connection = get_connection()
@@ -132,7 +132,7 @@ def pass_det():
         locality = request.form['locality' + str(i)]
         city = request.form['city' + str(i)]
         state = request.form['state' + str(i)]
-        pincode = request.form['pincode' + str(i)]
+        pincode = str(request.form['pincode' + str(i)])
         
         session["adhaar_no" + str(i)] = adhaar_no
 
