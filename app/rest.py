@@ -152,7 +152,7 @@ def pass_det():
 @app.route('/reserconf', methods=["POST"])
 def reserconf():
     for i in range(1, 7):
-        traevl_mode = session["travel_mode"]
+        travel_mode = session["travel_mode"]
         vehicle_no = request.form["vehicle_no" + str(i)]
         seat_no = str(request.form["seat_no" + str(i)])
 
