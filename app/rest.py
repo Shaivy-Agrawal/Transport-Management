@@ -1,7 +1,7 @@
 from flask import render_template
 from app import app
 import psycopg2
-from flask import jsonify, request, session
+from flask import jsonify, request, session, redirect, url_for
 from datetime import date
 
 def get_connection():
@@ -52,7 +52,7 @@ def getbuses():
 
     session["date_of_tr"] = date_of_tr
     session["dest"] = dest
-    session["travel_mode"] = "bus"
+    session["travel_mode"] = "Bus"
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -92,7 +92,7 @@ def gettrains():
     session["date_of_tr"] = date_of_tr
     session["dest"] = dest
 
-    session["travel_mode"] = "train"
+    session["travel_mode"] = "Train"
 
     connection = get_connection()
     cursor = connection.cursor()
@@ -125,6 +125,11 @@ def gettrains():
     print(train_list_dict)
     return jsonify(train_list_dict)
 
+@app.route('/selectvehiclenumber', methods=["POST"])
+def selectvehiclenumber():
+    session["vehicle_no"] = request.form["vehicle_no"]
+    return redirect(url_for('passenger_details'))
+
 @app.route('/pass_det', methods=["POST"])
 def pass_det():
     for i in range(1, 7):
@@ -149,30 +154,36 @@ def pass_det():
             cursor.execute("insert into customer values ('" + adhaar_no + "', '" + p_name + "', '" + dob + "')")
             cursor.execute("insert into address values(" + house_no + ", '" + locality + "', '" + city + "', '" + state + "', " + pincode + ", '" + adhaar_no + "')")
             cursor.execute("insert into customer_contact values ('" + contact + "', '" + adhaar_no + "')")
+            connection.commit()
 
     cursor.close()
     connection.close()
+
+    return redirect(url_for('booking_confirmation'))
 
 @app.route('/reserconf', methods=["POST"])
 def reserconf():
     for i in range(1, 7):
         travel_mode = session["travel_mode"]
-        vehicle_no = request.form["vehicle_no" + str(i)]
+        vehicle_no = session["vehicle_no"]
         seat_no = str(request.form["seat_no" + str(i)])
 
         connection = get_connection()
         cursor = connection.cursor()
 
-        if travel_mode == "" and vehicle_no == "" and seat_no == "":
+        if seat_no == "":
             session["res_id" + str(i)] = ""
             continue
         else:
+            print("insert into reservation(start_date, travel_mode, vehicle_no, adhaar_no, destination, agency_id, seat_no) values ('" + session["date_of_tr"] + "', '" + travel_mode + "', '" + vehicle_no + "', '" + session["adhaar_no" + str(i)] + "', '" + session["dest"] + "', " + session["agency_id"] + ", " + seat_no + ") returning res_id")
             cursor.execute("insert into reservation(start_date, travel_mode, vehicle_no, adhaar_no, destination, agency_id, seat_no) values ('" + session["date_of_tr"] + "', '" + travel_mode + "', '" + vehicle_no + "', '" + session["adhaar_no" + str(i)] + "', '" + session["dest"] + "', " + session["agency_id"] + ", " + seat_no + ") returning res_id")
             new_id = cursor.fetchone()[0]
             session["res_id" + str(i)] = str(new_id)
+            connection.commit()
 
     cursor.close()
     connection.close()
+    return redirect(url_for('payment_confirmation'))
 
     res_list = [session["res_id" + str(i)] for i in range(1, 7)]
 
@@ -194,13 +205,15 @@ def payconf():
         else:
             p_date = date.today().strftime("%Y-%m-%d")
             cursor.execute("insert into payment values (" + session["payment_id" + str(i)] + ", " + str(amount) + ", '" + p_date + "', '" + session["adhaar_no" + str(i)] + "', " + session["res_id" + str(i)] +")")
+            connection.commit()
 
     cursor.close()
     connection.close()
+    return redirect(url_for('view_booking'))
 
-    res_list = [session["res_id" + str(i)] for i in range(1, 7)]
+    #res_list = [session["res_id" + str(i)] for i in range(1, 7)]
 
-    return jsonify(res_list)
+    #return jsonify(res_list)
 
 @app.route('/confdisplay', methods=["GET"])
 def confdisplay():
@@ -209,22 +222,24 @@ def confdisplay():
 
     det_list = []
 
-    for i in range(1, 7):
-        cursor.execute("select vehicle_no, seat_no, travel_mode from reservation where res_id = " + session["res_id" + str(i)] + " and start_date = '" + session["date_of_tr"] + "' and adhaar_no = '" + session["adhaar_no" + str(i)] + "' and destination = '" + session["dest"] + "' and agency_id = " + session["agency_id"])
-        results = cursor.fetchone()
+    for i in range(1, 7):   
+        if (session["res_id" + str(i)] != "" and session["adhaar_no" + str(i)] != ""):
+            cursor.execute("select vehicle_no, seat_no, travel_mode from reservation where res_id = " + session["res_id" + str(i)] + " and start_date = '" + session["date_of_tr"] + "' and adhaar_no = '" + session["adhaar_no" + str(i)] + "' and destination = '" + session["dest"] + "' and agency_id = " + session["agency_id"])
+            results = cursor.fetchone()
 
-        temp_dict = dict()
+            temp_dict = dict()
 
-        temp_dict["vehicle_no"] = results[0]
-        temp_dict["seat_no"] = results[1]
-        temp_dict["travel_mode"] = results[2]
-        temp_dict["res_id"] = session["res_id" + str(i)]
-        temp_dict["payment_id"] = session["payment_id" + str(i)]
-        temp_dict["start_date"] = session["date_of_tr"]
-        temp_dict["adhaar_no"] = session["adhaar_no" + str(i)]
-        temp_dict["destination"] = session["dest"]
-        temp_dict["agency_id"] = session["agency_id"]
+            temp_dict["vehicle_no"] = results[0]
+            temp_dict["seat_no"] = results[1]
+            temp_dict["travel_mode"] = results[2]
+            temp_dict["res_id"] = session["res_id" + str(i)]
+            temp_dict["payment_id"] = session["payment_id" + str(i)]
+            temp_dict["start_date"] = session["date_of_tr"]
+            temp_dict["adhaar_no"] = session["adhaar_no" + str(i)]
+            temp_dict["destination"] = session["dest"]
+            temp_dict["agency_id"] = session["agency_id"]
 
-        det_list.append(det_list)
-
+            det_list.append(temp_dict)
+        
+    print({'Details': det_list})
     return jsonify({'Details': det_list})
