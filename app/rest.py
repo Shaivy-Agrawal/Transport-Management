@@ -3,14 +3,11 @@ from app import app
 import psycopg2
 from flask import jsonify, request, session, redirect, url_for
 from datetime import date
+import os
 
 def get_connection():
     try:
-        connection = psycopg2.connect(user = "postgres",
-                                    password = "transportmanagement",
-                                    host = "127.0.0.1",
-                                    port = "5432",
-                                    database = "transport_management2")
+        connection = psycopg2.connect(os.environ['DATABASE_URL'], sslmode='require')
         return (connection)
 
     except (Exception, psycopg2.Error) as error :

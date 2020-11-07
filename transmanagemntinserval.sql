@@ -1,26 +1,26 @@
 --admin_user
 insert into admin_user(user_name, dob, address) values 
-('souris', '1980-06-03', 'Doyens township');
-('shaivy', '2000-01-19', 'Hill Ridge');
+('souris', '1980-06-03', 'Doyens township'),
+('shaivy', '2000-01-19', 'Hill Ridge'),
 ('ayush', '1992-11-18', 'Aparna Sarovar');
 
 --administration
 insert into administration(passcode, user_id) values 
-('Google100', 12);
-('helloworld', 11);
+('Google100', 12),
+('helloworld', 11),
 ('transport4', 13);
 
 --travel_agency
 insert into travel_agency(agency_name, admin_id) values
-('Sun Fortune', 14);
-('Orange Travels', 13);
+('Sun Fortune', 14),
+('Orange Travels', 13),
 ('Kaveri Travels', 15);
 
 --agency_contact
 insert into agency_contact values 
-('4589357609', 3);
-('7666392009', 4);
-('9999000045', 4);
+('4589357609', 3),
+('7666392009', 4),
+('9999000045', 4),
 ('2893888485', 5);
 
 --bus_info
